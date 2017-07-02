@@ -11,3 +11,6 @@ db.initialiseDbConnection(() => {
     console.log(`Hex League listening on port ${cfg.PORT}`)
   })
 })
+
+
+middlewares.bind(app)
