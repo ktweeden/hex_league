@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 
 const cupSchema = mongoose.Schema({
-  title: String,
+  name: String,
 
   players: [{
     playerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'}
   }],
-  
+
   matches: [{
     matchId: {type: mongoose.Schema.Types.ObjectId, ref: 'Match'},
     winner: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},

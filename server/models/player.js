@@ -4,7 +4,7 @@ const playerSchema = mongoose.Schema({
   name: String,
 
   cups:[{
-    title: String,
+    name: String,
     cupId: {type: mongoose.Schema.Types.ObjectId, ref: 'Cup'}
   }]
 })
