@@ -29,29 +29,30 @@ function bindMiddlewares(app) {
   })
 
   app.post('/add-cup', (req, res) => {
-    player.addToDb(req.body.player1Name)
-    .then(newPlayer => {
-      console.log(newplayer)
-    })
-    .catch(err => console.error(err))
-    const player2 = player.addToDb(req.body.player2Name)
     const cupObject = {
-
+      name: req.body.cupName
     }
-    /**
-     * Parse out response into object
-     * Foreach player:
-     * Check if exists
-     * Add player id to object if they exist
-     * Create new player if they don't exist and add id to object
-     * Add cupObject to DB
-    **/
 
-    console.log(req.body)
-
-    readFile(path.join(__dirname, '../client/add-cup.html'))
+    player.addToDb(req.body.player1Name)
     .then(data => {
-      res.set('Content-Type', 'text/html').send(data)
+      cupObject.players = []
+      cupObject.players.push({playerId:data._id})
+    })
+    .then (data => {
+      player.addToDb(req.body.player2Name)
+      .then(data => {
+        cupObject.players.push({playerId:data._id})
+        console.log(cupObject)
+      })
+    })
+    .then(data => {
+      cup.addToDb(cupObject)
+    })
+    .then(data => {
+      readFile(path.join(__dirname, '../client/add-cup.html'))
+      .then(data => {
+        res.set('Content-Type', 'text/html').send(data)
+      })
     })
     .catch(err => console.error(err))
   })
