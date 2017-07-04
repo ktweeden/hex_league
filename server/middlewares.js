@@ -29,7 +29,11 @@ function bindMiddlewares(app) {
   })
 
   app.post('/add-cup', (req, res) => {
-    const player1 = player.addToDb(req.body.player1Name)
+    player.addToDb(req.body.player1Name)
+    .then(newPlayer => {
+      console.log(newplayer)
+    })
+    .catch(err => console.error(err))
     const player2 = player.addToDb(req.body.player2Name)
     const cupObject = {
 
