@@ -11,4 +11,15 @@ const playerSchema = mongoose.Schema({
 
 const Player = mongoose.model('Player', playerSchema)
 
-module.exports = { Payer }
+
+//TODO save cup to player object also - figure out order for this when creating new cup
+function addPlayerToDb(playerName) {
+  return new Player({
+    name: playerName
+  }).save()
+}
+
+module.exports = {
+  Player,
+  addToDb: addPlayerToDb
+}

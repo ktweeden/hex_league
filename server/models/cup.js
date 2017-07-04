@@ -16,6 +16,21 @@ const cupSchema = mongoose.Schema({
 
 })
 
-const Game = mongoose.model('Game', gameSchema)
+const Cup = mongoose.model('Cup', cupSchema)
 
-module.exports = { Game }
+function addCupToDb (cupObject) {
+  return new Cup ({
+    name: cupObject.cupName,
+    players: [{
+      playerId: cupObject.player1Id
+    },
+    {
+      playerId: cupObject.player2Id
+    }]
+  }).save()
+}
+
+module.exports = {
+  Cup,
+  addToDb: addCupToDb
+}
