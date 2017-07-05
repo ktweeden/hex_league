@@ -38,16 +38,12 @@ function bindMiddlewares(app) {
       cupObject.players = []
       cupObject.players.push({playerId:data._id})
     })
-    .then (data => {
-      player.addToDb(req.body.player2Name)
-      .then(data => {
-        cupObject.players.push({playerId:data._id})
-        console.log(cupObject)
-      })
-    })
+    .then (() => player.addToDb(req.body.player2Name))
     .then(data => {
-      cup.addToDb(cupObject)
+      cupObject.players.push({playerId:data._id})
+      console.log(cupObject)
     })
+    .then(() => cup.addToDb(cupObject))
     .then(data => {
       readFile(path.join(__dirname, '../client/add-cup.html'))
       .then(data => {
