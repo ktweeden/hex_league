@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 
 const cup = require('./models/cup')
 const player = require('./models/player')
+const match = require('./models/match')
+const game = require('./models/game')
 
 function bindMiddlewares(app) {
 
@@ -28,6 +30,14 @@ function bindMiddlewares(app) {
     .catch(err => console.error(err))
   })
 
+  app.get('/add-match', (req, res) => {
+    readFile(path.join(__dirname, '../client/add-match.html'))
+    .then(data => {
+      res.set('Content-Type', 'text/html').send(data)
+    })
+    .catch(err => console.error(err))
+  })
+
   app.post('/add-cup', (req, res) => {
     const cupObject = {
       name: req.body.cupName
@@ -44,7 +54,9 @@ function bindMiddlewares(app) {
       console.log(cupObject)
     })
     .then(() => cup.addToDb(cupObject))
-    .then(data => {
+    .then(console.log)
+
+    .then(() => {
       readFile(path.join(__dirname, '../client/add-cup.html'))
       .then(data => {
         res.set('Content-Type', 'text/html').send(data)
@@ -53,12 +65,63 @@ function bindMiddlewares(app) {
     .catch(err => console.error(err))
   })
 
+  app.post('/add-match', (req, res) => {
+    console.log(req.body)
+
+    const matchObject = {
+      date: req.body.datePlayed
+    }
+
+    game.checkExists(req.body.gameName)
+    .then(gameDoc => {
+      if (!gameDoc) {
+        return game.addToDb({name: req.body.gameName})
+      }
+      else {
+        return gameDoc
+      }
+    })
+    .then(gameDoc => {matchObject.game = gameDoc._id})
+    .then(() => cup.checkExists(req.body.cupName))
+    .then(cupDoc => {
+      if (!cupDoc) {
+        throw new Error("the cup doesn't exist")
+      }
+      return cupDoc
+    })
+    .then(cupDoc => {matchObject.cup = cupDoc._id})
+    .then(() => player.checkExists(req.body.winnerName))
+    .then(playerDoc => {
+      if (!playerDoc) {
+        throw new Error("the winner doesn't exist")
+      }
+      return playerDoc
+    })
+    .then(playerDoc => {matchObject.winner = playerDoc._id})
+    .then(() => match.addToDb(matchObject))
+    .then(console.log)
+    .then(() => {
+      readFile(path.join(__dirname, '../client/add-match.html'))
+      .then(data => {
+        res.set('Content-Type', 'text/html').send(data)
+      })
+    })
+    .catch(err => console.error(err))
+    /**
+    * check if game exists, if yes get id, if no create game and add id to matchObject
+    * find cup by name - save id to matchObject
+    * find winning player by name - add id to matchObject
+    * save match
+    **/
+
+    //TODO check player is part of cup
+  })
 }
 
 
 function readFile(file) {
-  return new Promise(function (resolve, reject) {
-    fs.readFile(file, function(error, data) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, (error, data) => {
       if (!!error) {
         return reject(error)
       }

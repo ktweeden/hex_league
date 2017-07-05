@@ -20,7 +20,7 @@ const Cup = mongoose.model('Cup', cupSchema)
 
 function addCupToDb (cupObject) {
   return new Cup ({
-    name: cupObject.cupName,
+    name: cupObject.name,
     players: [{
       playerId: cupObject.player1Id
     },
@@ -30,7 +30,19 @@ function addCupToDb (cupObject) {
   }).save()
 }
 
+function checkCupExists (cupName) {
+  return new Promise ((resolve, reject) => {
+    Cup.findOne({'name': cupName}, (error, doc) => {
+      if (!!error) {
+        reject(error)
+      }
+      resolve(doc)
+    })
+  })
+}
+
 module.exports = {
   Cup,
-  addToDb: addCupToDb
+  addToDb: addCupToDb,
+  checkExists: checkCupExists
 }

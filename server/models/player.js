@@ -13,7 +13,19 @@ function addPlayerToDb(playerName) {
   }).save()
 }
 
+function checkPlayerExists (playerName) {
+  return new Promise ((resolve, reject) => {
+    Player.findOne({'name': playerName}, (error, doc) => {
+      if (!!error) {
+        reject(error)
+      }
+      resolve(doc)
+    })
+  })
+}
+
 module.exports = {
   Player,
-  addToDb: addPlayerToDb
+  addToDb: addPlayerToDb,
+  checkExists: checkPlayerExists
 }
