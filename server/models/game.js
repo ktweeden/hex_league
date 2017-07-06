@@ -1,27 +1,22 @@
 const mongoose = require('mongoose')
 
 const gameSchema = mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  },
   //type: String,
   //playerNumber: Number
-
 })
 
 const Game = mongoose.model('Game', gameSchema)
 
-function addGameToDb (gameObject) {
-  return new Game (gameObject).save()
+function addGameToDb(gameObject) {
+  return new Game(gameObject).save()
 }
 
-function checkGameExists (gameName) {
-  return new Promise ((resolve, reject) => {
-    Game.findOne({'name': gameName}, (error, doc) => {
-      if (!!error) {
-        reject(error)
-      }
-      resolve(doc)
-    })
-  })
+function checkGameExists(name) {
+  return Game.findOne({ name })
 }
 
 module.exports = {

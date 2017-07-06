@@ -9,8 +9,8 @@ const matchSchema = mongoose.Schema({
 
 const Match = mongoose.model('Match', matchSchema)
 
-function addMatchToDb (matchObject) {
-  return new Match (matchObject).save()
+function addMatchToDb(matchObject) {
+  return new Match(matchObject).save()
 }
 
 module.exports = {

@@ -1,4 +1,3 @@
-const express = require('express')
 const fs = require('fs')
 const path = require('path')
 const bodyParser = require('body-parser')
@@ -14,29 +13,22 @@ function bindMiddlewares(app) {
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))
 
-  app.get('/', (req, res) => {
-    readFile(path.join(__dirname, '../client/home.html'))
-    .then(data => {
-      res.set('Content-Type', 'text/html').send(data)
+  for (const spec of [
+    { path: '/', template: 'home' },
+    { path: '/add-cup', template: 'add-cup' },
+    { path: '/add-match', template: 'add-match' },
+  ]) {
+    app.get(spec.url, (req, res) => {
+      readFile(path.join(__dirname, `../client/${spec.template}.html`))
+      .then(data => {
+        res.set('Content-Type', 'text/html').send(data)
+      })
+      .catch(err => {
+        console.error(err)
+        res.status(500).end()
+      })
     })
-    .catch(err => console.error(err))
-  })
-
-  app.get('/add-cup', (req, res) => {
-    readFile(path.join(__dirname, '../client/add-cup.html'))
-    .then(data => {
-      res.set('Content-Type', 'text/html').send(data)
-    })
-    .catch(err => console.error(err))
-  })
-
-  app.get('/add-match', (req, res) => {
-    readFile(path.join(__dirname, '../client/add-match.html'))
-    .then(data => {
-      res.set('Content-Type', 'text/html').send(data)
-    })
-    .catch(err => console.error(err))
-  })
+  }
 
   app.post('/add-cup', (req, res) => {
     const cupObject = {
@@ -44,19 +36,15 @@ function bindMiddlewares(app) {
     }
 
     player.addToDb(req.body.player1Name)
-    .then(data => {
-      cupObject.players = []
-      cupObject.players.push({playerId:data._id})
+    .then(playerDoc => {
+      cupObject.players = [ playerDoc._id ]
     })
-    .then (() => player.addToDb(req.body.player2Name))
-    .then(data => {
-      cupObject.players.push({playerId:data._id})
-      console.log(cupObject)
+    .then(() => player.addToDb(req.body.player2Name))
+    .then(playerDoc => {
+      cupObject.players.push(playerDoc._id)
     })
     .then(() => cup.addToDb(cupObject))
-    .then(console.log)
-
-    .then(() => {
+    .then(cupDoc => {
       readFile(path.join(__dirname, '../client/add-cup.html'))
       .then(data => {
         res.set('Content-Type', 'text/html').send(data)
@@ -74,14 +62,10 @@ function bindMiddlewares(app) {
 
     game.checkExists(req.body.gameName)
     .then(gameDoc => {
-      if (!gameDoc) {
-        return game.addToDb({name: req.body.gameName})
-      }
-      else {
-        return gameDoc
-      }
+      // (A || B) will evaluate to A if !!A and otherwise B
+      return gameDoc || game.addToDb({name: req.body.gameName})
     })
-    .then(gameDoc => {matchObject.game = gameDoc._id})
+    .then(gameDoc => matchObject.game = gameDoc._id)
     .then(() => cup.checkExists(req.body.cupName))
     .then(cupDoc => {
       if (!cupDoc) {
@@ -89,7 +73,7 @@ function bindMiddlewares(app) {
       }
       return cupDoc
     })
-    .then(cupDoc => {matchObject.cup = cupDoc._id})
+    .then(cupDoc => matchObject.cup = cupDoc._id)
     .then(() => player.checkExists(req.body.winnerName))
     .then(playerDoc => {
       if (!playerDoc) {
@@ -97,11 +81,10 @@ function bindMiddlewares(app) {
       }
       return playerDoc
     })
-    //TODO check player is part of cup
-    .then(playerDoc => {matchObject.winner = playerDoc._id})
+    // TODO check player is part of cup
+    .then(playerDoc => matchObject.winner = playerDoc._id)
     .then(() => match.addToDb(matchObject))
-    .then(console.log)
-    .then(() => {
+    .then(matchDoc => {
       readFile(path.join(__dirname, '../client/add-match.html'))
       .then(data => {
         res.set('Content-Type', 'text/html').send(data)
@@ -115,7 +98,7 @@ function bindMiddlewares(app) {
 function readFile(file) {
   return new Promise((resolve, reject) => {
     fs.readFile(file, (error, data) => {
-      if (!!error) {
+      if (error) {
         return reject(error)
       }
       resolve(data)

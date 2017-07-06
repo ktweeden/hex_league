@@ -1,44 +1,31 @@
 const mongoose = require('mongoose')
 
 const cupSchema = mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  }
 
-  players: [{
-    playerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'}
-  }],
+  players: [ {type: mongoose.Schema.Types.ObjectId, ref: 'Player'} ],
 
-  matches: [{
-    matchId: {type: mongoose.Schema.Types.ObjectId, ref: 'Match'},
-    winner: {type: mongoose.Schema.Types.ObjectId, ref: 'Player'},
-  }],
-
-  isComplete: Boolean
-
+  isComplete: {
+    type: Boolean,
+    default: false,
+  }
 })
 
 const Cup = mongoose.model('Cup', cupSchema)
 
-function addCupToDb (cupObject) {
+function addCupToDb(cupObject) {
   return new Cup ({
     name: cupObject.name,
-    players: [{
-      playerId: cupObject.player1Id
-    },
-    {
-      playerId: cupObject.player2Id
-    }]
+    players: [ cupObject.player1Id, cupObject.player2Id ]
   }).save()
 }
 
-function checkCupExists (cupName) {
-  return new Promise ((resolve, reject) => {
-    Cup.findOne({'name': cupName}, (error, doc) => {
-      if (!!error) {
-        reject(error)
-      }
-      resolve(doc)
-    })
-  })
+
+function checkCupExists(name) {
+  return Cup.findOne({ name })
 }
 
 module.exports = {
