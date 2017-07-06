@@ -97,6 +97,7 @@ function bindMiddlewares(app) {
       }
       return playerDoc
     })
+    //TODO check player is part of cup
     .then(playerDoc => {matchObject.winner = playerDoc._id})
     .then(() => match.addToDb(matchObject))
     .then(console.log)
@@ -107,14 +108,6 @@ function bindMiddlewares(app) {
       })
     })
     .catch(err => console.error(err))
-    /**
-    * check if game exists, if yes get id, if no create game and add id to matchObject
-    * find cup by name - save id to matchObject
-    * find winning player by name - add id to matchObject
-    * save match
-    **/
-
-    //TODO check player is part of cup
   })
 }
 
