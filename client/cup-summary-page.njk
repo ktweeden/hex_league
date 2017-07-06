@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hex League</h1>
+    <h2>{{cup}}</h2>
+    <h3>Matches</h3>
+    <ul>
+      {% for match in cup %}
+        <li>{{match.date}}</li>
+        <li>{{match.game}}</li>
+        <li>{{match.winner}}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
