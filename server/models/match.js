@@ -20,7 +20,7 @@ function addMatchToDb (matchObject) {
 }
 
 function findMatchesByCupId (cupId) {
-  Match.find({'cup': cupId})
+    return Match.find({'cup': cupId}).populate('game winner')
 }
 
 module.exports = {

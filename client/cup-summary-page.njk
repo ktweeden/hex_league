@@ -11,8 +11,8 @@
     <ul>
       {% for match in matchList %}
         <li>{{match.date}}</li>
-        <li>{{match.game}}</li>
-        <li>{{match.winner}}</li>
+        <li>{{match.game.name}}</li>
+        <li>{{match.winner.name}}</li>
       {% endfor %}
     </ul>
   </body>

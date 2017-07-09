@@ -87,13 +87,11 @@ function bindMiddlewares(app) {
   app.post('/cup-summary-page', (req, res) => {
     console.log(req.body)
     cup.checkExists(req.body.cupName)
-    .then(cupDoc => {
-      match.findByCupId(cupDoc._id)
-    })
+    .then(cupDoc => match.findByCupId(cupDoc._id))
     .then(matches => {
-      const matchesObject = {matches}
+      console.log(matches)
       res.render(path.join(__dirname, '../client/cup-summary-page.njk'),
-      {matchList: matchesObject})
+      {matchList: matches})
     })
     .catch(err => console.error(err))
   })
