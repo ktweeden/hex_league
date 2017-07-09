@@ -1,27 +1,17 @@
 const mongoose = require('mongoose')
 
 const playerSchema = mongoose.Schema({
-  name: String,
+  name: {type: String, required: true},
 })
 
 const Player = mongoose.model('Player', playerSchema)
 
-
-function addPlayerToDb(playerName) {
-  return new Player({
-    name: playerName
-  }).save()
+function addPlayerToDb(name) {
+  return new Player({ name }).save()
 }
 
-function checkPlayerExists (playerName) {
-  return new Promise ((resolve, reject) => {
-    Player.findOne({'name': playerName}, (error, doc) => {
-      if (!!error) {
-        reject(error)
-      }
-      resolve(doc)
-    })
-  })
+function checkPlayerExists(name) {
+  return Player.findOne({ name })
 }
 
 module.exports = {

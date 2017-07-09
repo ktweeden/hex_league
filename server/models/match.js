@@ -10,13 +10,8 @@ const matchSchema = mongoose.Schema({
 
 const Match = mongoose.model('Match', matchSchema)
 
-function addMatchToDb (matchObject) {
-  return new Match ({
-    date: matchObject.date,
-    game: matchObject.game,
-    winner: matchObject.winner,
-    cup: matchObject.cup
-  }).save()
+function addMatchToDb(matchObject) {
+  return new Match(matchObject).save()
 }
 
 function findMatchesByCupId (cupId) {
