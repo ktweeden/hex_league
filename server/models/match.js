@@ -19,8 +19,8 @@ function addMatchToDb (matchObject) {
   }).save()
 }
 
-function findMatchesByCupId (cupId) {
-  cup.find()
+function findMatchesByCupName (cupName) {
+  cup.find({'name': cupName})
 }
 
 module.exports = {

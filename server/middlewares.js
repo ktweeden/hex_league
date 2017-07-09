@@ -39,6 +39,10 @@ function bindMiddlewares(app) {
     .catch(err => console.error(err))
   })
 
+  app.get('/cup-summary-page', (req, res) => {
+    //TODO template in all matches in cup
+  })
+
   app.post('/add-cup', (req, res) => {
     const cupObject = {
       name: req.body.cupName
