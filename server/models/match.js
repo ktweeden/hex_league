@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const cup = require('cup')
+const cup = require('./cup')
 
 const matchSchema = mongoose.Schema({
   date: Date,
@@ -19,8 +19,8 @@ function addMatchToDb (matchObject) {
   }).save()
 }
 
-function findMatchesByCupName (cupName) {
-  cup.find({'name': cupName})
+function findMatchesByCupId (cupId) {
+  Match.find({'cup': cupId})
 }
 
 module.exports = {

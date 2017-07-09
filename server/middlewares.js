@@ -39,9 +39,23 @@ function bindMiddlewares(app) {
     .catch(err => console.error(err))
   })
 
+  /**
+   * get the cup by name from user (through form on home page)
+   * find cupId by name
+   * pass cupId to /cup-summary-page as request
+   * find all matches by cupId
+   * render the shit out of everything
+  **/
+
+
+
   app.get('/cup-summary-page', (req, res) => {
-    //TODO template in all matches in cup
+    res.render(path.join(__dirname, '../client/cup-summary-page.njk'), {})
   })
+
+    //TODO should recieve matches list from redirect
+
+
 
   app.post('/add-cup', (req, res) => {
     const cupObject = {
@@ -66,6 +80,20 @@ function bindMiddlewares(app) {
       .then(data => {
         res.set('Content-Type', 'text/html').send(data)
       })
+    })
+    .catch(err => console.error(err))
+  })
+
+  app.post('/cup-summary-page', (req, res) => {
+    console.log(req.body)
+    cup.checkExists(req.body.cupName)
+    .then(cupDoc => {
+      match.findByCupId(cupDoc._id)
+    })
+    .then(matches => {
+      const matchesObject = {matches}
+      res.render(path.join(__dirname, '../client/cup-summary-page.njk'),
+      {matchList: matchesObject})
     })
     .catch(err => console.error(err))
   })

@@ -2,10 +2,14 @@
 <html>
   <body>
     <h1>Hex League</h1>
-    <h2>{{cup}}</h2>
+    <form method="post">
+      <label for="cupName"> Search for cup:</label>
+      <input type="text" name="cupName">
+      <input type="submit" value="submit">
+    </form>
     <h3>Matches</h3>
     <ul>
-      {% for match in cup %}
+      {% for match in matchList %}
         <li>{{match.date}}</li>
         <li>{{match.game}}</li>
         <li>{{match.winner}}</li>
