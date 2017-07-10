@@ -4,6 +4,7 @@ const gameSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true
   },
   //type: String,
   //playerNumber: Number
