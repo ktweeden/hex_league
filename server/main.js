@@ -14,7 +14,9 @@ nunjucks.configure((path.join(__dirname, '../client')), {
 
 // Initialise database connection and begin listening on port cfg.PORT
 db.initialiseDbConnection(() => {
+  console.log('successfully connected to db')
   middlewares.bind(app)
+  console.log('middlewares are bound')
   app.listen(cfg.PORT, () => {
     console.log(`Hex League listening on port ${cfg.PORT}`)
   })

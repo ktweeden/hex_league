@@ -19,7 +19,7 @@ function bindMiddlewares(app) {
     { path: '/add-cup', template: 'add-cup' },
     { path: '/add-match', template: 'add-match' },
   ]) {
-    app.get(spec.url, (req, res) => {
+    app.get(spec.path, (req, res) => {
       readFile(path.join(__dirname, `../client/${spec.template}.html`))
       .then(data => {
         res.set('Content-Type', 'text/html').send(data)
